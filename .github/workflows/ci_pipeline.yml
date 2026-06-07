@@ -47,7 +47,13 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: 7. Build and Push Docker Image using MLflow
+    - name: 7. Generate Dockerfile & Patch Pip Bug
       run: |
-        mlflow models build-docker -m model_dir -n ${{ secrets.DOCKER_USERNAME }}/msml-burnout-model:latest
+        mlflow models generate-dockerfile -m model_dir -d docker_build_dir
+        sed -i 's|https://bootstrap.pypa.io/get-pip.py|https://bootstrap.pypa.io/pip/3.9/get-pip.py|g' docker_build_dir/Dockerfile
+
+    - name: 8. Build and Push Docker Image Manually
+      run: |
+        cd docker_build_dir
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/msml-burnout-model:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/msml-burnout-model:latest
