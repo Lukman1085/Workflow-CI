@@ -11,7 +11,7 @@ def train_and_save_model():
         shutil.rmtree("model_dir")
 
     # Memuat dataset
-    train_data = pd.read_csv('namadataset_preprocessing/train_processed.csv')
+    train_data = pd.read_csv("ai_impact_preprocessing/train_processed.csv")
     X_train = train_data.drop(columns=['Burnout_Risk_Level'])
     y_train = train_data['Burnout_Risk_Level']
 
