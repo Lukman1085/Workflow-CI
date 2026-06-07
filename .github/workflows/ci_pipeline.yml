@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   train-and-dockerize:
     runs-on: ubuntu-latest
@@ -29,15 +32,13 @@ jobs:
         pip install mlflow==2.19.0 scikit-learn pandas numpy
 
     - name: 4. Run MLflow Project (Training Model)
-      # Menjalankan MLproject tanpa environment conda tambahan karena dependencies sudah di-install di langkah 3
       run: |
-        mlflow run . --no-conda 
+        mlflow run . --env-manager=local 
 
     - name: 5. Save Artifacts to GitHub (Memenuhi Syarat Menyimpan Artefak)
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifact
-        # Mengunggah direktori model hasil dari modelling.py
         path: ./MLProject/model_dir/ 
 
     - name: 6. Login to Docker Hub
